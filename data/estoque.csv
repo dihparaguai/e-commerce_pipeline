@@ -1,0 +1,13 @@
+produto_id,produto,categoria,marca,fornecedor,estoque_inicial,entradas_periodo,estoque_atual,estoque_minimo,custo_unitario,centro_distribuicao
+101,Notebook Pro 14,Notebook,TechMax,Fornecedor TechMax,507,78,503,67,3196.94,CD Sul
+102,Notebook Air 13,Notebook,TechMax,Fornecedor TechMax,305,107,271,67,2688.8,CD Sudeste
+103,Mouse Sem Fio X1,Periféricos,ClickGo,Fornecedor ClickGo,526,239,416,25,73.4,CD Nordeste
+104,Teclado Mecânico K80,Periféricos,ClickGo,Fornecedor ClickGo,396,58,369,25,230.05,CD Sudeste
+105,Monitor 24 Full HD,Monitores,ViewTop,Fornecedor ViewTop,299,179,100,21,685.15,CD Nordeste
+106,Monitor 27 QHD,Monitores,ViewTop,Fornecedor ViewTop,281,233,112,64,1171.71,CD Nordeste
+107,Headset Gamer H7,Áudio,SoundBit,Fornecedor SoundBit,394,106,201,57,193.76,CD Sul
+108,Caixa de Som Mini,Áudio,SoundBit,Fornecedor SoundBit,594,51,187,71,128.9,CD Sudeste
+109,Smartphone S12,Smartphone,MobiOne,Fornecedor MobiOne,537,158,451,37,1794.37,CD Sudeste
+110,Smartphone S12 Lite,Smartphone,MobiOne,Fornecedor MobiOne,290,136,304,25,1382.14,CD Sul
+111,Tablet T10,Tablet,MobiOne,Fornecedor MobiOne,229,141,124,58,1025.54,CD Sul
+112,Webcam HD Pro,Acessórios,VisionCam,Fornecedor VisionCam,593,61,211,49,167.62,CD Nordeste

@@ -1,0 +1,211 @@
+devolucao_id,pedido_id,data_devolucao,cliente_id,produto_id,quantidade_devolvida,valor_devolvido,motivo_devolucao,status_devolucao
+1,18,2025-06-04,1450,105,1,1031.41,Entrega em atraso,Concluída
+2,29,2025-05-20,1275,102,1,3268.35,Arrependimento da compra,Concluída
+3,40,2025-08-20,1068,106,2,3312.61,Produto com defeito,Em análise
+4,46,2025-11-22,1145,102,1,3676.72,Arrependimento da compra,Em análise
+5,91,2025-09-27,1127,111,1,1280.05,Arrependimento da compra,Concluída
+6,101,2025-08-27,1437,108,1,448.46,Arrependimento da compra,Concluída
+7,122,2025-11-18,1136,110,1,1737.24,Produto com defeito,Em análise
+8,128,2025-05-26,1064,105,2,1998.76,Avaria no transporte,Concluída
+9,130,2026-01-14,1377,102,1,1754.66,Avaria no transporte,Em análise
+10,149,2025-03-29,1439,104,2,898.35,Arrependimento da compra,Concluída
+11,154,2025-12-06,1437,110,1,819.7,Produto com defeito,Em análise
+12,174,2025-04-30,1405,111,1,2751.85,Produto com defeito,Concluída
+13,198,2025-10-31,1232,111,1,687.98,Produto com defeito,Concluída
+14,212,2025-12-02,1387,102,1,1925.07,Avaria no transporte,Concluída
+15,232,2025-10-25,1232,109,1,4722.72,Arrependimento da compra,Concluída
+16,279,2025-04-24,1229,102,2,7622.38,Produto com defeito,Concluída
+17,287,2025-10-13,1014,111,1,1617.28,Entrega em atraso,Em análise
+18,296,2025-08-10,1422,107,2,873.89,Produto com defeito,Concluída
+19,304,2025-03-01,1393,101,2,7700.41,Arrependimento da compra,Em análise
+20,314,2025-11-27,1047,108,2,808.18,Produto diferente do esperado,Em análise
+21,324,2025-08-03,1202,106,1,1552.18,Entrega em atraso,Concluída
+22,339,2025-02-28,1022,107,1,298.94,Arrependimento da compra,Concluída
+23,355,2025-04-01,1128,103,1,554.68,Entrega em atraso,Em análise
+24,374,2025-04-10,1345,101,1,8206.83,Arrependimento da compra,Concluída
+25,402,2025-04-12,1005,103,1,130.46,Produto diferente do esperado,Em análise
+26,438,2025-01-12,1038,105,1,1438.48,Arrependimento da compra,Concluída
+27,443,2025-12-12,1192,105,1,1070.34,Avaria no transporte,Concluída
+28,464,2025-12-20,1043,112,1,1020.91,Arrependimento da compra,Em análise
+29,479,2025-11-16,1326,110,1,1688.45,Produto com defeito,Em análise
+30,480,2025-08-03,1220,106,2,4547.65,Arrependimento da compra,Concluída
+31,490,2025-06-22,1375,102,1,10852.19,Produto diferente do esperado,Em análise
+32,491,2025-09-01,1196,106,1,3324.71,Produto com defeito,Concluída
+33,493,2025-09-24,1370,111,1,5516.97,Produto diferente do esperado,Concluída
+34,497,2025-05-31,1435,102,1,7586.26,Produto com defeito,Concluída
+35,523,2025-05-09,1189,110,1,835.82,Produto diferente do esperado,Concluída
+36,532,2025-02-23,1055,104,1,379.24,Entrega em atraso,Em análise
+37,538,2025-03-31,1237,112,1,229.3,Avaria no transporte,Em análise
+38,577,2025-02-07,1153,104,1,345.38,Entrega em atraso,Concluída
+39,592,2025-05-15,1403,106,2,6204.97,Produto diferente do esperado,Concluída
+40,609,2025-06-28,1198,112,1,506.22,Entrega em atraso,Em análise
+41,627,2025-05-07,1100,101,1,4438.64,Produto diferente do esperado,Concluída
+42,633,2025-10-16,1245,111,1,3795.55,Arrependimento da compra,Em análise
+43,673,2025-12-19,1175,109,1,2537.89,Produto diferente do esperado,Concluída
+44,697,2025-07-20,1104,109,1,2346.38,Arrependimento da compra,Concluída
+45,701,2025-08-16,1170,103,2,281.08,Entrega em atraso,Concluída
+46,714,2025-05-26,1045,101,1,8002.26,Produto diferente do esperado,Concluída
+47,741,2025-08-09,1082,103,1,63.48,Avaria no transporte,Concluída
+48,748,2025-02-10,1310,106,1,6448.92,Produto com defeito,Concluída
+49,779,2025-10-22,1436,108,1,186.7,Entrega em atraso,Em análise
+50,808,2025-04-09,1075,109,1,7069.48,Produto diferente do esperado,Concluída
+51,810,2025-05-30,1154,109,1,5132.0,Entrega em atraso,Concluída
+52,838,2025-03-15,1094,105,1,949.98,Produto com defeito,Concluída
+53,844,2025-11-04,1432,108,2,404.83,Arrependimento da compra,Concluída
+54,847,2025-03-20,1102,107,1,145.75,Produto com defeito,Concluída
+55,852,2025-10-28,1005,110,1,5534.84,Produto diferente do esperado,Concluída
+56,869,2025-03-14,1311,105,1,1002.42,Avaria no transporte,Concluída
+57,876,2025-04-03,1086,106,1,4233.06,Entrega em atraso,Concluída
+58,880,2025-05-22,1230,109,2,4765.46,Entrega em atraso,Concluída
+59,900,2025-07-27,1177,106,1,1658.78,Avaria no transporte,Concluída
+60,908,2025-06-17,1103,105,1,1046.05,Arrependimento da compra,Concluída
+61,911,2025-08-13,1249,104,1,176.1,Produto com defeito,Concluída
+62,920,2025-10-21,1159,111,1,746.06,Produto com defeito,Em análise
+63,926,2025-02-21,1184,110,1,1868.26,Arrependimento da compra,Concluída
+64,931,2025-09-21,1219,112,1,1097.99,Arrependimento da compra,Concluída
+65,948,2025-12-27,1112,101,2,7865.5,Produto com defeito,Concluída
+66,949,2025-08-13,1041,108,2,600.34,Produto com defeito,Concluída
+67,954,2025-03-27,1384,112,1,252.18,Entrega em atraso,Concluída
+68,969,2025-02-08,1402,103,2,234.31,Avaria no transporte,Concluída
+69,978,2025-02-19,1376,103,1,264.93,Entrega em atraso,Concluída
+70,984,2025-10-12,1344,105,1,1956.21,Produto diferente do esperado,Concluída
+71,994,2025-10-10,1115,112,2,1107.59,Arrependimento da compra,Em análise
+72,1015,2025-10-08,1447,106,1,1593.59,Entrega em atraso,Concluída
+73,1038,2026-01-05,1244,101,1,16621.04,Avaria no transporte,Em análise
+74,1049,2025-08-04,1439,110,1,1726.89,Produto com defeito,Concluída
+75,1051,2025-08-05,1142,105,1,515.86,Avaria no transporte,Em análise
+76,1069,2025-12-13,1404,101,1,3976.72,Produto com defeito,Concluída
+77,1077,2025-09-11,1304,103,1,148.56,Arrependimento da compra,Concluída
+78,1080,2025-02-03,1009,103,2,353.63,Arrependimento da compra,Concluída
+79,1108,2025-04-25,1238,112,1,217.89,Entrega em atraso,Em análise
+80,1109,2025-11-21,1361,107,1,276.69,Produto com defeito,Concluída
+81,1110,2025-08-19,1272,111,2,2069.36,Produto diferente do esperado,Concluída
+82,1126,2025-02-09,1248,105,1,1832.89,Arrependimento da compra,Em análise
+83,1127,2025-02-03,1234,101,1,7378.64,Produto com defeito,Concluída
+84,1130,2025-07-31,1190,110,1,6374.71,Produto diferente do esperado,Concluída
+85,1142,2025-12-01,1007,107,1,857.0,Arrependimento da compra,Concluída
+86,1157,2025-03-09,1028,108,1,414.48,Produto com defeito,Concluída
+87,1240,2025-12-12,1155,107,1,885.19,Entrega em atraso,Concluída
+88,1241,2026-01-10,1324,105,1,926.81,Avaria no transporte,Concluída
+89,1242,2025-02-20,1422,107,2,583.33,Entrega em atraso,Em análise
+90,1263,2025-12-28,1311,106,2,6420.78,Avaria no transporte,Concluída
+91,1273,2025-08-12,1227,107,1,1140.57,Avaria no transporte,Concluída
+92,1281,2025-08-03,1336,110,1,3460.55,Entrega em atraso,Concluída
+93,1282,2025-03-27,1442,106,1,1617.4,Produto diferente do esperado,Concluída
+94,1289,2025-03-31,1388,110,2,5227.02,Entrega em atraso,Em análise
+95,1292,2026-01-07,1240,111,1,1438.24,Produto diferente do esperado,Concluída
+96,1323,2025-03-20,1317,102,1,10262.04,Produto diferente do esperado,Concluída
+97,1353,2025-07-26,1300,109,1,3406.18,Arrependimento da compra,Concluída
+98,1356,2025-06-11,1243,109,1,2193.45,Produto diferente do esperado,Concluída
+99,1361,2025-11-05,1281,103,1,131.48,Produto com defeito,Concluída
+100,1377,2025-01-31,1051,101,1,8771.09,Produto diferente do esperado,Concluída
+101,1379,2025-06-07,1261,104,1,176.0,Avaria no transporte,Concluída
+102,1383,2025-09-05,1043,103,2,369.18,Produto com defeito,Concluída
+103,1434,2025-03-28,1205,108,1,304.3,Entrega em atraso,Concluída
+104,1439,2025-06-08,1011,101,1,8254.43,Produto com defeito,Em análise
+105,1496,2025-08-22,1092,105,1,1861.82,Produto com defeito,Concluída
+106,1554,2025-08-02,1162,107,1,288.02,Arrependimento da compra,Concluída
+107,1558,2025-11-28,1002,111,2,2171.52,Avaria no transporte,Em análise
+108,1559,2026-01-15,1348,101,1,1947.5,Arrependimento da compra,Concluída
+109,1569,2025-03-13,1335,111,1,4483.52,Avaria no transporte,Concluída
+110,1584,2025-03-26,1359,112,1,491.02,Produto diferente do esperado,Concluída
+111,1654,2025-07-11,1393,109,1,1272.82,Avaria no transporte,Concluída
+112,1656,2025-07-31,1438,112,1,279.47,Avaria no transporte,Em análise
+113,1657,2025-04-14,1068,111,1,1415.61,Produto com defeito,Em análise
+114,1681,2025-03-15,1115,112,1,307.03,Produto com defeito,Em análise
+115,1682,2025-01-17,1143,104,1,342.37,Produto com defeito,Em análise
+116,1686,2025-10-07,1375,111,1,2999.67,Produto diferente do esperado,Concluída
+117,1690,2025-02-28,1246,112,1,507.54,Produto com defeito,Concluída
+118,1691,2025-04-11,1097,103,1,124.83,Entrega em atraso,Concluída
+119,1709,2025-08-05,1076,101,1,4369.0,Produto com defeito,Concluída
+120,1717,2025-06-07,1057,106,1,6399.18,Produto com defeito,Concluída
+121,1777,2025-04-01,1146,110,1,5231.98,Produto com defeito,Concluída
+122,1786,2025-03-02,1088,106,1,3030.93,Entrega em atraso,Concluída
+123,1797,2025-03-07,1236,101,1,2025.22,Avaria no transporte,Concluída
+124,1801,2026-01-05,1093,107,1,1103.41,Produto com defeito,Concluída
+125,1805,2025-09-24,1112,103,2,113.12,Produto com defeito,Concluída
+126,1844,2025-06-25,1009,108,1,194.21,Arrependimento da compra,Concluída
+127,1874,2025-07-08,1250,109,1,2350.3,Produto com defeito,Concluída
+128,1876,2025-08-24,1003,102,2,6951.62,Produto diferente do esperado,Concluída
+129,1880,2025-12-14,1416,101,2,8385.1,Entrega em atraso,Concluída
+130,1919,2025-06-13,1130,110,1,861.13,Avaria no transporte,Concluída
+131,1943,2025-03-21,1448,107,1,295.98,Arrependimento da compra,Concluída
+132,1955,2025-10-17,1010,101,2,12098.01,Arrependimento da compra,Concluída
+133,1969,2025-09-25,1393,102,1,3515.33,Arrependimento da compra,Concluída
+134,1996,2025-03-19,1038,110,1,1864.03,Produto com defeito,Em análise
+135,2015,2025-06-04,1078,104,1,685.0,Avaria no transporte,Concluída
+136,2018,2025-10-26,1215,110,1,1857.84,Produto diferente do esperado,Em análise
+137,2024,2025-12-17,1397,102,1,11831.76,Entrega em atraso,Em análise
+138,2038,2025-12-10,1419,102,1,10057.69,Produto diferente do esperado,Concluída
+139,2075,2025-02-23,1262,106,1,1604.35,Avaria no transporte,Em análise
+140,2115,2025-10-03,1219,101,1,4382.25,Avaria no transporte,Em análise
+141,2131,2025-11-04,1216,107,1,307.45,Produto diferente do esperado,Concluída
+142,2132,2025-11-26,1413,107,1,144.46,Produto com defeito,Concluída
+143,2143,2025-10-01,1214,105,1,1978.0,Produto com defeito,Em análise
+144,2190,2025-08-04,1386,111,1,5872.11,Produto com defeito,Concluída
+145,2245,2025-02-13,1295,109,1,9432.32,Arrependimento da compra,Em análise
+146,2249,2025-02-11,1332,103,1,62.7,Arrependimento da compra,Em análise
+147,2252,2025-12-31,1300,107,1,604.0,Avaria no transporte,Concluída
+148,2255,2025-08-02,1277,101,1,4121.55,Avaria no transporte,Concluída
+149,2268,2025-04-05,1266,103,1,163.15,Avaria no transporte,Concluída
+150,2286,2025-12-16,1428,103,1,124.47,Avaria no transporte,Concluída
+151,2321,2025-03-24,1368,110,1,5089.02,Produto com defeito,Concluída
+152,2332,2025-09-20,1058,103,1,283.95,Entrega em atraso,Concluída
+153,2338,2025-12-29,1014,104,1,194.48,Entrega em atraso,Concluída
+154,2354,2025-08-09,1315,106,1,1396.63,Arrependimento da compra,Em análise
+155,2366,2025-01-16,1362,110,1,1555.87,Avaria no transporte,Concluída
+156,2368,2025-09-02,1350,105,1,504.28,Produto com defeito,Concluída
+157,2375,2025-10-07,1150,106,1,3111.72,Produto diferente do esperado,Concluída
+158,2383,2025-03-06,1106,106,1,1547.89,Avaria no transporte,Concluída
+159,2397,2025-03-08,1316,102,1,3491.2,Produto com defeito,Concluída
+160,2399,2025-09-22,1023,109,1,1169.38,Produto diferente do esperado,Em análise
+161,2404,2025-02-10,1281,109,1,1093.46,Entrega em atraso,Concluída
+162,2412,2025-08-04,1074,103,2,228.24,Produto com defeito,Concluída
+163,2442,2025-09-14,1171,101,1,8059.68,Produto com defeito,Concluída
+164,2453,2025-09-28,1047,103,1,153.98,Entrega em atraso,Concluída
+165,2470,2025-07-21,1013,103,2,347.73,Avaria no transporte,Concluída
+166,2495,2025-04-20,1189,101,2,12091.85,Produto diferente do esperado,Concluída
+167,2497,2025-05-29,1362,105,1,1797.75,Produto com defeito,Em análise
+168,2499,2025-06-20,1073,106,2,6972.46,Produto diferente do esperado,Em análise
+169,2502,2025-06-30,1255,101,1,3889.97,Arrependimento da compra,Em análise
+170,2517,2025-05-10,1334,106,1,5119.38,Entrega em atraso,Concluída
+171,2540,2025-01-24,1372,109,1,4544.59,Entrega em atraso,Em análise
+172,2542,2025-02-01,1076,106,1,3185.51,Produto diferente do esperado,Em análise
+173,2551,2025-04-30,1116,110,2,5214.16,Produto com defeito,Concluída
+174,2570,2025-04-27,1247,102,1,3390.57,Arrependimento da compra,Em análise
+175,2585,2025-02-10,1110,111,2,6006.88,Produto com defeito,Concluída
+176,2607,2025-10-01,1254,101,1,4131.95,Arrependimento da compra,Concluída
+177,2609,2025-04-22,1224,111,1,1406.39,Produto diferente do esperado,Em análise
+178,2626,2025-07-12,1404,103,1,185.02,Entrega em atraso,Em análise
+179,2650,2025-07-15,1106,109,1,1111.37,Produto com defeito,Em análise
+180,2652,2025-08-21,1250,105,1,511.02,Produto diferente do esperado,Em análise
+181,2655,2025-02-04,1239,108,1,843.26,Entrega em atraso,Concluída
+182,2693,2025-08-26,1341,105,1,2855.78,Avaria no transporte,Em análise
+183,2724,2025-04-06,1219,111,2,4605.64,Entrega em atraso,Concluída
+184,2737,2025-12-13,1341,101,1,8639.4,Arrependimento da compra,Em análise
+185,2763,2025-12-29,1382,103,1,69.32,Produto com defeito,Concluída
+186,2801,2025-03-31,1353,106,2,4496.48,Avaria no transporte,Em análise
+187,2807,2025-12-02,1311,108,2,444.7,Avaria no transporte,Em análise
+188,2817,2025-05-24,1236,112,1,283.57,Produto com defeito,Concluída
+189,2828,2025-11-22,1186,107,1,515.68,Avaria no transporte,Em análise
+190,2829,2025-01-29,1194,105,1,973.07,Entrega em atraso,Em análise
+191,2832,2025-02-08,1028,107,1,149.18,Produto diferente do esperado,Concluída
+192,2835,2025-11-22,1428,101,1,5690.8,Avaria no transporte,Concluída
+193,2842,2025-05-20,1399,107,1,145.2,Produto com defeito,Concluída
+194,2853,2025-09-26,1279,110,1,6948.02,Arrependimento da compra,Concluída
+195,2873,2025-07-24,1198,107,1,299.02,Produto diferente do esperado,Concluída
+196,2889,2025-02-04,1098,110,1,1829.45,Avaria no transporte,Concluída
+197,2904,2025-06-23,1342,108,1,201.03,Entrega em atraso,Concluída
+198,2913,2025-02-03,1344,108,2,298.04,Arrependimento da compra,Concluída
+199,2920,2025-04-26,1348,108,1,243.14,Arrependimento da compra,Concluída
+200,2922,2025-07-28,1240,104,1,756.03,Avaria no transporte,Concluída
+201,2923,2025-02-13,1098,110,1,4992.59,Arrependimento da compra,Em análise
+202,2929,2025-07-01,1039,111,1,1590.85,Entrega em atraso,Em análise
+203,2939,2025-11-28,1168,103,1,59.65,Entrega em atraso,Em análise
+204,2955,2025-08-12,1384,103,1,144.68,Produto diferente do esperado,Em análise
+205,2958,2025-04-10,1373,111,2,2072.36,Entrega em atraso,Concluída
+206,2959,2025-08-28,1345,111,1,1332.18,Entrega em atraso,Concluída
+207,2968,2025-06-26,1441,111,1,1420.51,Produto com defeito,Concluída
+208,2984,2025-08-10,1167,109,1,3543.82,Produto diferente do esperado,Concluída
+209,2986,2025-03-29,1278,108,1,371.47,Avaria no transporte,Em análise
+210,2998,2025-12-14,1148,106,1,1733.29,Arrependimento da compra,Concluída
