@@ -375,5 +375,17 @@ services:
       - ${AIRFLOW_PROJ_DIR:-.}/src:/opt/airflow/src
       - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
 
+  minio:
+    image: quay.io/minio/minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - ${AIRFLOW_PROJ_DIR:-.}/data/minio:/data
+
 volumes:
   postgres-db-volume:
