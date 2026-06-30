@@ -22,7 +22,8 @@ with DAG(
     # Task para enviar o job PySpark ao Spark Master
     submit_job = SparkSubmitOperator(
         task_id="submit_spark_job",
-        application="/opt/airflow/src/test_spark.py", # Caminho do script dentro do container do Airflow/Spark
+        application="/opt/airflow/tests/test_spark.py", # Caminho do script dentro do container do Airflow/Spark
         conn_id="spark_default", # ID da conexão configurada no UI do Airflow para apontar para o Spark Master
+        packages="org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262", # Dependências para conexão com o MinIO (S3A)
         verbose=True
     )
