@@ -1,0 +1,2 @@
+apache-airflow-providers-apache-spark 
+opentelemetry-sdk~=1.27.0

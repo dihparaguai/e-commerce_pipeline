@@ -1,0 +1,35 @@
+# Define uma imagem temporária do Spark para extrair os binários oficiais
+# A versão 3.5.1 é a mesma versão rodando no cluster
+FROM apache/spark:3.5.1 AS spark
+
+# Imagem base oficial do Apache Airflow
+FROM apache/airflow:3.1.7-python3.12
+
+# Troca para root temporariamente para instalar pacotes do sistema operacional
+USER root
+
+# Instala o JDK 17 (necessário para rodar o spark-submit localmente no container) e o pacote procps (que fornece o comando 'ps', usado por scripts do Spark para monitorar processos)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    openjdk-17-jre-headless \
+    procps \
+    && apt-get autoremove -yqq --purge \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copia os binários e JARs oficiais do Spark 3.5.1 para dentro do container do Airflow
+# Isso garante que o cliente do Spark no Airflow seja idêntico ao do cluster, evitando incompatibilidades.
+COPY --from=spark /opt/spark /opt/spark
+
+# Configura as variáveis de ambiente necessárias para o Spark e Java funcionarem
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV SPARK_HOME=/opt/spark
+ENV PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+
+# Retorna para o usuário não-root 'airflow' por questões de segurança
+USER airflow
+
+# Instala as bibliotecas Python do projeto.
+# Usamos '--use-deprecated=legacy-resolver' porque o novo resolvedor de dependências do pip entra em loop infinito ao tentar resolver a árvore complexa de pacotes nativos do Airflow.
+COPY requirements.txt /requirements.txt
+RUN pip install --no-cache-dir --use-deprecated=legacy-resolver -r /requirements.txt

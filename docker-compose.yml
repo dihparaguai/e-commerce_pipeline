@@ -49,8 +49,10 @@ x-airflow-common:
   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
   &airflow-common
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.1.7-python3.12}
-  # build: .
+  image: e-commerce_pipeline_airflow:3.1.7-python3.12
+  build:
+    context: .
+    dockerfile: docker/Dockerfile.airflow
   env_file:
     - ${ENV_FILE_PATH:-.env}
   environment: &airflow-common-env
@@ -86,6 +88,16 @@ x-airflow-common:
       condition: service_healthy
     postgres:
       condition: service_healthy
+
+x-spark-common: &spark-common
+  build:
+    context: .
+    dockerfile: docker/Dockerfile.spark
+  image: e-commerce_pipeline_spark:3.5.1-python3.12
+  volumes:
+    - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
+    - ${AIRFLOW_PROJ_DIR:-.}/src:/opt/airflow/src
+    - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
 
 services:
   postgres:
@@ -334,7 +346,7 @@ services:
         condition: service_completed_successfully
 
   spark-master:
-    image: apache/spark:3.5.1
+    <<: *spark-common
     command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
     environment:
       - SPARK_MODE=master
@@ -342,19 +354,15 @@ services:
       - SPARK_RPC_ENCRYPTION_ENABLED=no
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
-      - PYSPARK_PYTHON=/usr/bin/python3
-      - PYSPARK_DRIVER_PYTHON=/usr/bin/python3
+      - PYSPARK_PYTHON=/usr/local/bin/python3
+      - PYSPARK_DRIVER_PYTHON=/usr/local/bin/python3
       - PATH=/opt/spark/bin:/opt/spark/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     ports:
       - "8081:8080"
       - "7077:7077"
-    volumes:
-      - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
-      - ${AIRFLOW_PROJ_DIR:-.}/src:/opt/airflow/src
-      - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
 
   spark-worker:
-    image: apache/spark:3.5.1
+    <<: *spark-common
     command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
     environment:
       - SPARK_MODE=worker
@@ -365,15 +373,11 @@ services:
       - SPARK_RPC_ENCRYPTION_ENABLED=no
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
-      - PYSPARK_PYTHON=/usr/bin/python3
-      - PYSPARK_DRIVER_PYTHON=/usr/bin/python3
+      - PYSPARK_PYTHON=/usr/local/bin/python3
+      - PYSPARK_DRIVER_PYTHON=/usr/local/bin/python3
       - PATH=/opt/spark/bin:/opt/spark/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     depends_on:
       - spark-master
-    volumes:
-      - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
-      - ${AIRFLOW_PROJ_DIR:-.}/src:/opt/airflow/src
-      - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
 
   minio:
     image: quay.io/minio/minio

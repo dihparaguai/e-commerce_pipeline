@@ -1,0 +1,31 @@
+# Imagem base oficial do Apache Spark 3.5.1 (rodando em Ubuntu 20.04 LTS)
+FROM apache/spark:3.5.1
+
+# Troca para root temporariamente para instalar pacotes de compilação
+USER root
+
+# Como o Ubuntu 20.04 oficial só possui o Python 3.8 em seus repositórios padrão, foi instalado o Python 3.12 oficial direto da python.org para manter o ambiente seguro e 100% alinhado com a versão do Python do container do Airflow.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libssl-dev \
+    zlib1g-dev \
+    libffi-dev \
+    curl \
+    # Baixa o código fonte do Python 3.12.3 oficial
+    && curl -O https://www.python.org/ftp/python/3.12.3/Python-3.12.3.tgz \
+    && tar -xf Python-3.12.3.tgz \
+    && cd Python-3.12.3 \
+    # Configura a compilação para instalar o binário no path /usr/local
+    && ./configure --prefix=/usr/local \
+    # Compila
+    && make -j$(nproc) \
+    && make install \
+    && cd .. \
+    # Remove os diretórios temporários e dependências pós-compilação
+    && rm -rf Python-3.12.3* \
+    && apt-get purge -y --auto-remove build-essential curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Retorna para o usuário não-root 'spark' por questões de segurança
+USER spark
