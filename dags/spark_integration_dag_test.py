@@ -25,5 +25,5 @@ with DAG(
         application="/opt/airflow/tests/test_spark.py", # Caminho do script dentro do container do Airflow/Spark
         conn_id="spark_default", # ID da conexão configurada no UI do Airflow para apontar para o Spark Master
         packages="org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262", # Dependências para conexão com o MinIO (S3A)
-        verbose=True
+        verbose=True # Mostra todos os logs do Spark Submit no log do Airflow
     )
