@@ -1,29 +1,22 @@
+import os
+import sys
+from pathlib import Path
 from pyspark.sql import SparkSession
-from minio import Minio
 from dotenv import load_dotenv
 
-load_dotenv()
-
-MINIO_ROOT_USER = os.getenv("MINIO_ROOT_USER", "minioadmin")
-MINIO_ROOT_PASSWORD = os.getenv("MINIO_ROOT_PASSWORD", "minioadmin")
-
-def create_minio_bucket(spark, bucket_name):
-    """
-    Cria um bucket no MinIO usando o SDK do Minio em Python.
-    """
-    client = Minio(
-        "minio:9000",
-        access_key=MINIO_ROOT_USER,
-        secret_key=MINIO_ROOT_PASSWORD,
-        secure=False
-    )
-    if not client.bucket_exists(bucket_name):
-        client.make_bucket(bucket_name)
+# Adiciona o diretório base (/opt/airflow) ao sys.path para reconhecer o módulo 'src'
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from src.modules.minio_utils import create_minio_bucket
 
 def create_and_show_spark_df(): 
     """
     Inicializa ou obtém uma sessão ativa do Spark com suporte ao S3A/MinIO.
     """
+    load_dotenv()
+
+    MINIO_ROOT_USER = os.getenv("MINIO_ROOT_USER", "minioadmin")
+    MINIO_ROOT_PASSWORD = os.getenv("MINIO_ROOT_PASSWORD", "minioadmin")
+        
     # O appName define o nome da aplicação que aparecerá no Spark Web UI.
     spark = (
         SparkSession.builder
@@ -40,7 +33,7 @@ def create_and_show_spark_df():
     )
     
     # Cria o bucket 'test-spark' antes de tentar gravar nele
-    create_minio_bucket(spark, "test-spark")
+    create_minio_bucket("test-spark")
     
     data = [("diego", 28), ("rodrigo", 27)]
     columns = ["nome", "idade"]

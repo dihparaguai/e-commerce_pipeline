@@ -1,3 +1,4 @@
 apache-airflow-providers-apache-spark==6.1.0
 opentelemetry-sdk~=1.27.0
 minio==7.2.20
+loguru==0.7.3
