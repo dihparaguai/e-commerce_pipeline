@@ -1,7 +1,8 @@
 .venv
 .env
 .agents
+.pytest_cache/
+__pycache__/
 data/minio/
 logs/
-__pycache__/
-.pytest_cache/
+config/
