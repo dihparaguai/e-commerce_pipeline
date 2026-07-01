@@ -6,6 +6,7 @@ sys.path.append("/opt/airflow")
 
 from src.modules.spark_session import get_spark_session, close_spark_session
 from loguru import logger
+from pyspark.sql import functions as F
 
 def ingest_estoque() -> None:
     """
@@ -32,6 +33,9 @@ def ingest_estoque() -> None:
             .option("inferSchema", "true")
             .load(raw_csv_path)
         )
+        
+        # Adiciona a coluna 'data_carga' com a data atual (formato yyyy-MM-dd)
+        df = df.withColumn("data_carga", F.current_date())
         
         # Lógica de Ingestão Incremental: remover duplicados da própria carga nova e filtrar IDs que já existem no histórico
         try:
