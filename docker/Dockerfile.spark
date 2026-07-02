@@ -27,5 +27,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Baixa os JARs do Hadoop AWS diretamente na pasta de JARs do Spark (ainda como root)
+RUN echo ":quit" | /opt/spark/bin/spark-shell --packages org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262 \
+    && cp /root/.ivy2/jars/*.jar /opt/spark/jars/ \
+    && rm -rf /root/.ivy2
+
 # Retorna para o usuário não-root 'spark' por questões de segurança
 USER spark

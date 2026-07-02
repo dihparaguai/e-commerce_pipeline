@@ -24,14 +24,15 @@ def get_spark_session(app_name: str) -> SparkSession:
         spark = (
             SparkSession.builder
             .appName(app_name)
-            # Baixa os pacotes Hadoop AWS e AWS Java SDK bundle para o Spark se comunicar com o S3/MinIO
-            .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262")
             # Configurações do Hadoop FileSystem para MinIO
             .config("spark.hadoop.fs.s3a.endpoint", minio_endpoint)
             .config("spark.hadoop.fs.s3a.access.key", minio_user)
             .config("spark.hadoop.fs.s3a.secret.key", minio_password)
             .config("spark.hadoop.fs.s3a.path.style.access", "true")
             .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
+            # Limita a recursos por aplicação para rodar em paralelo no cluster
+            .config("spark.cores.max", "1")
+            .config("spark.executor.memory", "512m")
             .getOrCreate()
         )
         

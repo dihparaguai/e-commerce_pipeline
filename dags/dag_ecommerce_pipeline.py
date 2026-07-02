@@ -13,7 +13,6 @@ from src.modules.minio_utils import create_minio_bucket
 
 # Configurações globais centralizadas do Spark
 SPARK_CONN_ID = "spark_default"
-SPARK_PACKAGES = "org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262"
 JOBS_BASE_PATH = "/opt/airflow/src/jobs/ingest"
 
 # Define a função sem parametros, pra não precisar usar o kwargs no PythonOperator
@@ -36,7 +35,7 @@ with DAG(
     start_date=datetime(2026, 1, 1),
     schedule=None,  # Execução manual
     catchup=False,
-    tags=['ecommerce', 'bronze', 'pipeline', 'minio'],
+    tags=['ecommerce', 'pipeline', 'minio', 'postgres'],
 ) as dag:
 
     # Setup do Bucket Bronze
@@ -50,8 +49,6 @@ with DAG(
         task_id="ingest_vendas_to_bronze",
         application=f"{JOBS_BASE_PATH}/ingest_vendas.py",
         conn_id=SPARK_CONN_ID,
-        packages=SPARK_PACKAGES,
-        conf={"spark.jars.ivy": "/tmp/.ivy-vendas"},
         verbose=True
     )
 
@@ -60,8 +57,6 @@ with DAG(
         task_id="ingest_estoque_to_bronze",
         application=f"{JOBS_BASE_PATH}/ingest_estoque.py",
         conn_id=SPARK_CONN_ID,
-        packages=SPARK_PACKAGES,
-        conf={"spark.jars.ivy": "/tmp/.ivy-estoque"},
         verbose=True
     )
 
@@ -70,8 +65,6 @@ with DAG(
         task_id="ingest_devolucoes_to_bronze",
         application=f"{JOBS_BASE_PATH}/ingest_devolucoes.py",
         conn_id=SPARK_CONN_ID,
-        packages=SPARK_PACKAGES,
-        conf={"spark.jars.ivy": "/tmp/.ivy-devolucoes"},
         verbose=True
     )
 

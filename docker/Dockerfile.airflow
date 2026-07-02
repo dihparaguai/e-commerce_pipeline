@@ -26,10 +26,17 @@ ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 
+# Baixa os JARs do Hadoop AWS diretamente na pasta de JARs do Spark (ainda como root)
+RUN echo ":quit" | spark-shell --packages org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262 \
+    && cp /root/.ivy2/jars/*.jar /opt/spark/jars/ \
+    && rm -rf /root/.ivy2
+
 # Retorna para o usuário não-root 'airflow' por questões de segurança
 USER airflow
 
 # Instala as bibliotecas Python do projeto.
 # Usamos '--use-deprecated=legacy-resolver' porque o novo resolvedor de dependências do pip entra em loop infinito ao tentar resolver a árvore complexa de pacotes nativos do Airflow.
 COPY requirements.txt /requirements.txt
-RUN pip install --no-cache-dir --use-deprecated=legacy-resolver -r /requirements.txt
+RUN pip install --no-cache-dir --use-deprecated=legacy-resolver -r /requirements.txt \
+    && pip uninstall -y pyspark-client \
+    && pip install --no-cache-dir pyspark==3.5.1
