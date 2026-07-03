@@ -31,7 +31,7 @@ def get_spark_session(app_name: str) -> SparkSession:
             .config("spark.hadoop.fs.s3a.path.style.access", "true")
             .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
             # Limita a recursos por aplicação para rodar em paralelo no cluster
-            .config("spark.cores.max", "1")
+            .config("spark.cores.max", "2")
             .config("spark.executor.memory", "512m")
             .getOrCreate()
         )

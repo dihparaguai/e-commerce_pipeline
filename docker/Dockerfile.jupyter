@@ -1,0 +1,14 @@
+# Dockerfile para o Jupyter Lab herdando da imagem do Spark pré-compilada
+FROM e-commerce_pipeline_spark:3.5.1-python3.12
+
+USER root
+
+# Permite que qualquer UID rodando com o grupo 0 (root group) escreva no /etc/passwd em tempo de execução, para que seja injetado dinamicamente o UID atual no /etc/passwd caso ele não esteja mapeado
+RUN chmod g+w /etc/passwd
+
+# Instala as dependências a partir do requirements.txt
+COPY docker/requirements-jupyter.txt /requirements.txt
+RUN pip3 install --no-cache-dir -r /requirements.txt
+
+# Retorna para o usuário não-root 'spark' por questões de segurança
+USER spark

@@ -35,8 +35,8 @@ RUN echo ":quit" | spark-shell --packages org.apache.hadoop:hadoop-aws:3.3.4,com
 USER airflow
 
 # Instala as bibliotecas Python do projeto.
-# Usamos '--use-deprecated=legacy-resolver' porque o novo resolvedor de dependências do pip entra em loop infinito ao tentar resolver a árvore complexa de pacotes nativos do Airflow.
-COPY requirements.txt /requirements.txt
+# '--use-deprecated=legacy-resolver' usado pois o novo resolvedor de dependências do pip entra em loop infinito ao tentar resolver a árvore complexa de pacotes nativos do Airflow.
+COPY docker/requirements-airflow.txt /requirements.txt
 RUN pip install --no-cache-dir --use-deprecated=legacy-resolver -r /requirements.txt \
     && pip uninstall -y pyspark-client \
     && pip install --no-cache-dir pyspark==3.5.1

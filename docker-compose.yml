@@ -359,6 +359,7 @@ services:
       - PYSPARK_PYTHON=/usr/local/bin/python3
       - PYSPARK_DRIVER_PYTHON=/usr/local/bin/python3
       - PATH=/opt/spark/bin:/opt/spark/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - SPARK_MASTER_OPTS=-Dspark.deploy.spreadOut=false
     ports:
       - "8081:8080"
       - "7077:7077"
@@ -381,7 +382,7 @@ services:
     depends_on:
       - spark-master
     deploy:
-      replicas: 3
+      replicas: 2
 
   minio:
     image: quay.io/minio/minio
@@ -394,6 +395,46 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
     volumes:
       - ${AIRFLOW_PROJ_DIR:-.}/data/minio:/data
+
+  jupyter:
+    image: e-commerce_pipeline_jupyter:4.2.1
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
+      - ${AIRFLOW_PROJ_DIR:-.}/notebooks:/opt/airflow/notebooks
+      - ${AIRFLOW_PROJ_DIR:-.}/src:/opt/airflow/src
+      - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
+      - ${AIRFLOW_PROJ_DIR:-.}/tests:/opt/airflow/tests
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT:-http://minio:9000}
+      # Define /tmp como HOME, que possui acesso de escrita global, para garantir permissão de escrita para pastas do Jupyter (.local, .jupyter, .cache)
+      - HOME=/tmp
+      # Força a JVM (Java) a reconhecer /tmp como home, evitando que o Hadoop quebre no resolvedor de usuário
+      - _JAVA_OPTIONS=-Duser.home=/tmp
+      # Nome do usuário do Hadoop/Spark para consistência com o container
+      - HADOOP_USER_NAME=jupyter
+    # Roda o container com o UID do WSL para permitir edição de arquivos diretamente do host
+    user: "${AIRFLOW_UID:-50000}:0"
+    working_dir: /opt/airflow
+    # Injeta dinamicamente o UID atual no /etc/passwd caso ele não esteja mapeado
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        if ! whoami &>/dev/null; then
+          echo "jupyter:x:$$(id -u):0:Jupyter User:/tmp:/bin/bash" >> /etc/passwd
+        fi
+        exec "$$0" "$$@"
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --NotebookApp.token='' --NotebookApp.password=''
+    depends_on:
+      - spark-master
+      - minio
 
 volumes:
   postgres-db-volume:

@@ -2,7 +2,3 @@ apache-airflow-providers-apache-spark==6.1.0
 opentelemetry-sdk~=1.43.0
 minio==7.2.20
 loguru==0.7.3
-jupyterlab==4.2.1
-pyspark==3.5.1
-python-dotenv==1.2.1
-pandas==2.3.3

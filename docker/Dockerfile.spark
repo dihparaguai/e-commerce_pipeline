@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     zlib1g-dev \
     libffi-dev \
+    # Baixa o SQLITE3 para ser usado na imagem do Jupyter
+    libsqlite3-dev \
     curl \
     # Baixa o código fonte do Python 3.12.3 oficial
     && curl -O https://www.python.org/ftp/python/3.12.3/Python-3.12.3.tgz \

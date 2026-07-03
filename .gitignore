@@ -2,6 +2,7 @@
 .env
 .agents
 .pytest_cache/
+.ipynb_checkpoints/
 __pycache__/
 data/minio/
 logs/
