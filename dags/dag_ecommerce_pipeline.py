@@ -78,6 +78,15 @@ with DAG(
         verbose=True
     )
 
+    # Transformação de Devoluções
+    transform_devolucoes = SparkSubmitOperator(
+        task_id="transform_devolucoes_to_silver",
+        application=f"{JOBS_BASE_PATH}/transform/transform_devolucoes.py",
+        conn_id=SPARK_CONN_ID,
+        verbose=True
+    )
+
     # Definição do fluxo do pipeline:
     create_buckets >> [ingest_vendas, ingest_estoque, ingest_devolucoes]
     ingest_vendas >> transform_vendas
+    ingest_devolucoes >> transform_devolucoes
