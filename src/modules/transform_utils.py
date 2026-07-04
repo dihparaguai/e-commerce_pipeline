@@ -38,7 +38,6 @@ def extract_date_parts(df: DataFrame, date_col: str) -> DataFrame:
         df
         .withColumn("ano", F.year(date_casted))
         .withColumn("mes", F.month(date_casted))
-        .withColumn("dia", F.dayofmonth(date_casted))
     )
     return df
 

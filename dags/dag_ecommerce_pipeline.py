@@ -13,19 +13,21 @@ from src.modules.minio_utils import create_minio_bucket
 
 # Configurações globais centralizadas do Spark
 SPARK_CONN_ID = "spark_default"
-JOBS_BASE_PATH = "/opt/airflow/src/jobs/ingest"
+JOBS_BASE_PATH = "/opt/airflow/src/jobs"
 
 # Define a função sem parametros, pra não precisar usar o kwargs no PythonOperator
-def create_bronze_bucket_task():
+def create_buckets_task():
     """
-    Garante que o bucket bronze esteja criado no MinIO.
+    Garante que o bucket bronze, silver e gold esteja criado no MinIO.
     """
     create_minio_bucket("bronze")
+    create_minio_bucket("silver")
+    create_minio_bucket("gold")
 
 # Configuração dos argumentos padrão da DAG do pipeline
 default_args = {
     'owner': 'airflow',
-    'retries': 0,
+    'retries': 1,
     'retry_delay': timedelta(seconds=15),
 }
 
@@ -38,36 +40,44 @@ with DAG(
     tags=['ecommerce', 'pipeline', 'minio', 'postgres'],
 ) as dag:
 
-    # Setup do Bucket Bronze
-    create_bronze_bucket = PythonOperator(
-        task_id="create_bronze_bucket",
-        python_callable=create_bronze_bucket_task,
+    # Setup dos Buckets
+    create_buckets = PythonOperator(
+        task_id="create_buckets_task",
+        python_callable=create_buckets_task,
     )
 
-    # Ingestão de Vendas (Spark)
+    # Ingestão de Vendas
     ingest_vendas = SparkSubmitOperator(
         task_id="ingest_vendas_to_bronze",
-        application=f"{JOBS_BASE_PATH}/ingest_vendas.py",
+        application=f"{JOBS_BASE_PATH}/ingest/ingest_vendas.py",
         conn_id=SPARK_CONN_ID,
         verbose=True
     )
 
-    # Ingestão de Estoque (Spark)
+    # Ingestão de Estoque
     ingest_estoque = SparkSubmitOperator(
         task_id="ingest_estoque_to_bronze",
-        application=f"{JOBS_BASE_PATH}/ingest_estoque.py",
+        application=f"{JOBS_BASE_PATH}/ingest/ingest_estoque.py",
         conn_id=SPARK_CONN_ID,
         verbose=True
     )
 
-    # Ingestão de Devoluções (Spark)
+    # Ingestão de Devoluções
     ingest_devolucoes = SparkSubmitOperator(
         task_id="ingest_devolucoes_to_bronze",
-        application=f"{JOBS_BASE_PATH}/ingest_devolucoes.py",
+        application=f"{JOBS_BASE_PATH}/ingest/ingest_devolucoes.py",
+        conn_id=SPARK_CONN_ID,
+        verbose=True
+    )
+
+    # Transformação de Vendas
+    transform_vendas = SparkSubmitOperator(
+        task_id="transform_vendas_to_silver",
+        application=f"{JOBS_BASE_PATH}/transform/transform_vendas.py",
         conn_id=SPARK_CONN_ID,
         verbose=True
     )
 
     # Definição do fluxo do pipeline:
-    # 1. Cria Bucket Bronze -> 2. Dispara as 3 ingestões em paralelo
-    create_bronze_bucket >> [ingest_vendas, ingest_estoque, ingest_devolucoes]
+    create_buckets >> [ingest_vendas, ingest_estoque, ingest_devolucoes]
+    ingest_vendas >> transform_vendas
