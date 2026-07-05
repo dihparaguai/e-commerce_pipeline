@@ -122,3 +122,36 @@ def create_dim_local(df_vendas: DataFrame) -> DataFrame:
     
     logger.info("Modelagem da dim_local concluída.")
     return df_dim_local
+
+def create_dim_fornecedor(df_estoque: DataFrame) -> DataFrame:
+    """
+    Cria a tabela dim_fornecedor a partir do campo fornecedor de estoque, gerando um ID único.
+    """
+    logger.info("Iniciando a modelagem da dimensão fornecedor (dim_fornecedor)...")
+    if df_estoque is None:
+        logger.warning("Origem de estoque é None para dim_fornecedor.")
+        return None
+        
+    # Seleciona fornecedores únicos
+    df_forn = (
+        df_estoque
+        .select("fornecedor")
+        .filter(
+            F.col("fornecedor").isNotNull()
+        )
+        .dropDuplicates(["fornecedor"])
+    )
+    
+    # Adiciona ID único usando row_number ordenado pelo nome do fornecedor
+    window_spec = Window.orderBy("fornecedor")
+    df_dim_fornecedor = (
+        df_forn
+        .withColumn(
+            "fornecedor_id", 
+            F.row_number()
+            .over(window_spec)
+        )
+    )
+    
+    logger.info("Modelagem da dim_fornecedor concluída.")
+    return df_dim_fornecedor
