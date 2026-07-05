@@ -102,9 +102,17 @@ with DAG(
         verbose=True
     )
 
+    # Modelagem de Dimensão Cliente
+    modeling_dim_cliente = SparkSubmitOperator(
+        task_id="modeling_dim_cliente_to_gold",
+        application=f"{JOBS_BASE_PATH}/modeling/modeling_dim_cliente.py",
+        conn_id=SPARK_CONN_ID,
+        verbose=True
+    )
     # Definição do fluxo do pipeline:
     create_buckets >> [ingest_vendas, ingest_estoque, ingest_devolucoes]
     ingest_vendas >> transform_vendas
     ingest_devolucoes >> transform_devolucoes
     ingest_estoque >> transform_estoque
     [transform_vendas, transform_devolucoes, transform_estoque] >> modeling_dim_produto
+    [transform_vendas, transform_devolucoes] >> modeling_dim_cliente

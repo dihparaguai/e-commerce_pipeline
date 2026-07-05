@@ -57,3 +57,35 @@ def create_dim_produto(df_vendas: DataFrame, df_estoque: DataFrame, df_devolucoe
     
     logger.info("Modelagem da dim_produto concluída.")
     return df_dedup
+
+def create_dim_cliente(df_vendas: DataFrame, df_devolucoes: DataFrame) -> DataFrame:
+    """
+    Cria a tabela dim_cliente a partir do union dos IDs de clientes de vendas e devoluções.
+    """
+    logger.info("Iniciando a modelagem da dimensão cliente (dim_cliente)...")
+    
+    parts = []
+    if df_vendas is not None:
+        parts.append(df_vendas.select("cliente_id"))
+    if df_devolucoes is not None:
+        parts.append(df_devolucoes.select("cliente_id"))
+        
+    if not parts:
+        logger.warning("Nenhuma origem válida fornecida para dim_cliente.")
+        return None
+        
+    # Union e deduplicação
+    df_union = parts[0]
+    for df_part in parts[1:]:
+        df_union = df_union.union(df_part)
+        
+    # Remove nulos e duplicados
+    df_dedup = (
+        df_union
+        .filter(
+            F.col("cliente_id").isNotNull()
+        )
+        .dropDuplicates(["cliente_id"])
+    )
+    logger.info("Modelagem da dim_cliente concluída.")
+    return df_dedup
