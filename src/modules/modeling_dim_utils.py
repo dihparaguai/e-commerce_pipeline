@@ -89,3 +89,36 @@ def create_dim_cliente(df_vendas: DataFrame, df_devolucoes: DataFrame) -> DataFr
     )
     logger.info("Modelagem da dim_cliente concluída.")
     return df_dedup
+
+def create_dim_local(df_vendas: DataFrame) -> DataFrame:
+    """
+    Cria a tabela dim_local a partir dos campos cidade e estado de vendas, gerando um ID único.
+    """
+    logger.info("Iniciando a modelagem da dimensão local (dim_local)...")
+    if df_vendas is None:
+        logger.warning("Origem de vendas é None para dim_local.")
+        return None
+        
+    # Seleciona combinações únicas de cidade e estado
+    df_local = (
+        df_vendas
+        .select("cidade", "estado")
+        .filter(
+            F.col("cidade").isNotNull() 
+            | F.col("estado").isNotNull()
+        )
+        .dropDuplicates(["cidade", "estado"])
+    )
+    
+    # Adiciona ID único usando row_number em uma janela ordenada por estado e cidade
+    window_spec = Window.orderBy("estado", "cidade")
+    df_dim_local = (
+        df_local
+        .withColumn(
+            "local_id", 
+            F.row_number().over(window_spec)
+        )
+    )
+    
+    logger.info("Modelagem da dim_local concluída.")
+    return df_dim_local

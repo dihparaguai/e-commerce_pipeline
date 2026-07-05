@@ -109,6 +109,15 @@ with DAG(
         conn_id=SPARK_CONN_ID,
         verbose=True
     )
+
+    # Modelagem de Dimensão Local
+    modeling_dim_local = SparkSubmitOperator(
+        task_id="modeling_dim_local_to_gold",
+        application=f"{JOBS_BASE_PATH}/modeling/modeling_dim_local.py",
+        conn_id=SPARK_CONN_ID,
+        verbose=True
+    )
+
     # Definição do fluxo do pipeline:
     create_buckets >> [ingest_vendas, ingest_estoque, ingest_devolucoes]
     ingest_vendas >> transform_vendas
@@ -116,3 +125,4 @@ with DAG(
     ingest_estoque >> transform_estoque
     [transform_vendas, transform_devolucoes, transform_estoque] >> modeling_dim_produto
     [transform_vendas, transform_devolucoes] >> modeling_dim_cliente
+    transform_vendas >> modeling_dim_local
