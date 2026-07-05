@@ -1,13 +1,12 @@
 import sys
-
-# Adiciona o diretório base (/opt/airflow) ao sys.path para reconhecer o módulo 'src'
-sys.path.append("/opt/airflow")
-
 from loguru import logger
 from pyspark.sql import functions as F
 
+# Adiciona o diretório base (/opt/airflow) ao sys.path para reconhecer o módulo 'src'
+sys.path.append("/opt/airflow")
 from src.modules.spark_session import get_spark_session, close_spark_session
 import src.modules.transform_utils as transform
+import src.modules.utils as utils
 
 def run_transform_devolucoes() -> None:
     """
@@ -25,36 +24,22 @@ def run_transform_devolucoes() -> None:
     try:
         # Lê os dados da camada Bronze e renomeia data_carga para data_carga_bronze
         logger.info("Lendo dados da camada Bronze de: '{}'", bronze_path)
-        df = spark.read.parquet(bronze_path).withColumnRenamed("data_carga", "data_carga_bronze")
-        
-        # Filtros de Carga Incremental
         try:
-            logger.info("Lendo dados existentes na camada Silver para validação incremental...")
-            df_silver = spark.read.parquet(silver_path)
-            
-            # Filtro pela data_carga_bronze máxima presente na Silver
-            max_date_row = df_silver.select(F.max("data_carga_bronze")).collect()[0]
-            max_data_carga = max_date_row[0]
-            
-            if max_data_carga:
-                logger.info("Data máxima de carga encontrada na Silver: {}. Filtrando dados novos da Bronze...", max_data_carga)
-                df = df.filter(F.col("data_carga_bronze") > max_data_carga)
-                
-            # Left anti join com a chave primária devolucao_id
-            df = df.join(df_silver, on="devolucao_id", how="left_anti")
-            logger.info("Filtros incrementais aplicados.")
-            
-        except Exception as e:
-            logger.info("Camada Silver vazia ou não encontrada. Executando carga completa inicial.")
-            
-        # Total de registros a processar após filtros
-        total_records = df.count()
-        logger.info("Registros a serem processados nesta carga incremental: {}", total_records)
+            df = spark.read.parquet(bronze_path).withColumnRenamed("data_carga", "data_carga_bronze")
+        except Exception:
+            logger.warning("Camada Bronze '{}' vazia ou não encontrada. Nada para processar.", bronze_path)
+            return
         
+        # Filtros de Carga Incremental modularizados
+        df = transform.filter_incremental(spark, df, silver_path, "devolucao_id")
+        
+        total_records = df.count()
         if total_records == 0:
             logger.info("Nenhum registro novo para processar.")
             return
-
+        
+        logger.info("Registros a serem processados nesta carga incremental: {}", total_records)
+        
         # Aplica TRIM nas colunas de texto
         text_cols = ["motivo_devolucao", "status_devolucao"]
         df = transform.trim_columns(df, text_cols)
@@ -65,10 +50,12 @@ def run_transform_devolucoes() -> None:
         # Arredonda as colunas de valor para 2 casas decimais
         df = transform.round_values(df, ["valor_devolvido"], decimals=2)
         
-        # Total de registros novos a serem gravados
+        # Adiciona a data de carga do processamento da Silver
+        df = df.withColumn("data_carga", F.to_date(F.lit(utils.get_current_date_str())))
+        
         logger.info("Transformação executada. Total de registros novos a serem gravados: {}", df.count())
 
-        # Grava os novos dados na camada Silver em modo append
+        # Grava os novos dados na camada Silver
         logger.info("Gravando novos dados transformados na Silver em: '{}'", silver_path)
         (
             df.write
