@@ -1,58 +1,43 @@
 import os
 import sys
+from loguru import logger
+from datetime import date
 
 # Adiciona o diretório base (/opt/airflow) ao sys.path para reconhecer o módulo 'src'
 sys.path.append("/opt/airflow")
-
 from src.modules.spark_session import get_spark_session, close_spark_session
-from loguru import logger
-from pyspark.sql import functions as F
+import src.modules.ingest_utils as ingest
+import src.modules.utils as utils
 
 def ingest_devolucoes() -> None:
     """
-    Job PySpark para ler a base de devoluções brutos (CSV) e gravá-la na camada Bronze no MinIO
-    como Parquet particionado pelas colunas: data_devolucao e status_devolucao.
+    Job PySpark para ler novos arquivos de devoluções (CSV) e gravá-los na camada Bronze no MinIO com controle de CDC local (evitando duplicar arquivos já processados) e de chaves.
     """
     logger.info("Iniciando a ingestão de devoluções (Raw -> Bronze)...")
+    raw_dir = "/opt/airflow/data/raw/devolucoes"
+    log_dir = "/opt/airflow/data/cdc"
+    log_filename = "devolucoes.csv"
+    bronze_parquet_path = "s3a://bronze/devolucoes"
+    
+    # Obtém a lista de arquivos novos
+    new_files = ingest.get_new_files(raw_dir, log_dir, log_filename)
+    
+    if not new_files:
+        logger.info("Nenhum arquivo novo de devoluções encontrado para ingestão.")
+        return
+    logger.info("Arquivos novos de devoluções detectados para processamento: {}", new_files)
     
     # Inicializa a sessão do Spark
     spark = get_spark_session("IngestionDevolucoesBronze")
-    
     try:
-        # Define os caminhos de origem e destino
-        raw_csv_path = "/opt/airflow/data/raw/devolucoes.csv"
-        bronze_parquet_path = "s3a://bronze/devolucoes"
+        data_carga_str = utils.get_current_date_str()
         
-        logger.info("Lendo arquivo CSV de origem: '{}'", raw_csv_path)
+        # Lê os CSVs novos e adiciona data_carga
+        df = ingest.read_new_csv_files(spark, raw_dir, new_files, data_carga_str)
         
-        # Lê o CSV inferindo o schema e assumindo a presença de cabeçalho
-        df = (
-            spark.read
-            .format("csv")
-            .option("header", "true")
-            .option("inferSchema", "true")
-            .load(raw_csv_path)
-        )
+        # Filtra os dados duplicados locais e existentes no histórico da Bronze
+        df_to_append = ingest.deduplicate_and_filter_existing(spark, df, "devolucao_id", bronze_parquet_path)
         
-        # Adiciona a coluna 'data_carga' com a data atual (formato yyyy-MM-dd)
-        df = df.withColumn("data_carga", F.current_date())
-        
-        # Lógica de Ingestão Incremental: remover duplicados da própria carga nova e filtrar IDs que já existem no histórico
-        try:
-            logger.info("Buscando dados existentes no destino para realizar o filtro incremental...")
-            df_existing = spark.read.parquet(bronze_parquet_path)
-            
-            # Remove duplicados internos da nova carga com base na chave primária
-            df_new_unique = df.dropDuplicates(["devolucao_id"])
-            
-            # Mantém apenas os registros novos que não existem no histórico
-            df_to_append = df_new_unique.join(df_existing, on="devolucao_id", how="left_anti")
-            logger.info("Dados existentes encontrados. Filtrando chaves duplicadas.")
-        except Exception:
-            logger.info("Nenhum dado existente encontrado. Preparando primeira carga.")
-            df_to_append = df.dropDuplicates(["devolucao_id"])
-
-        # Log da quantidade de registros a serem inseridos para validação
         logger.info("Total de registros a serem inseridos: {}", df_to_append.count())
 
         # Grava os dados particionados na Bronze
@@ -60,10 +45,12 @@ def ingest_devolucoes() -> None:
         (
             df_to_append.write
             .mode("append")
-            .partitionBy("data_devolucao", "status_devolucao")
+            .partitionBy("data_carga")
             .parquet(bronze_parquet_path)
         )
         
+        # Registra os arquivos como processados no log de CDC após o sucesso da gravação
+        ingest.register_processed_files(log_dir, log_filename, new_files, data_carga_str)
         logger.info("Ingestão de devoluções finalizada com sucesso!")
         
     except Exception as e:
