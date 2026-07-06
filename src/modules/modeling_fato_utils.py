@@ -47,3 +47,17 @@ def create_fato_vendas(df_vendas: DataFrame, df_dim_local: DataFrame) -> DataFra
     
     logger.info("Modelagem da fato_vendas concluída.")
     return df_fato
+
+def create_fato_devolucoes(df_devolucoes: DataFrame) -> DataFrame:
+    """
+    Cria a tabela fato_devolucoes a partir da tabela Silver de devoluções.
+    Remove colunas de controle de carga anteriores.
+    """
+    logger.info("Iniciando a modelagem da fato devoluções (fato_devolucoes)...")
+    if df_devolucoes is None:
+        logger.warning("Origem de devoluções é None. Retornando None.")
+        return None
+        
+    df_fato = _drop_data_carga(df_devolucoes)
+    logger.info("Modelagem da fato_devolucoes concluída.")
+    return df_fato
