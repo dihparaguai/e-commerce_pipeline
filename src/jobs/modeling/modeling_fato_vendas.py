@@ -6,7 +6,7 @@ sys.path.append("/opt/airflow")
 from loguru import logger
 from pyspark.sql import functions as F
 
-from src.modules.spark_session import get_spark_session, close_spark_session
+from src.services.spark_session import get_spark_session, close_spark_session
 import src.modules.modeling_fato_utils as modeling_fato
 import src.modules.utils as utils
 

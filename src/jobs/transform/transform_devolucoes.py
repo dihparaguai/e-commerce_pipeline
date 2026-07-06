@@ -4,7 +4,7 @@ from pyspark.sql import functions as F
 
 # Adiciona o diretório base (/opt/airflow) ao sys.path para reconhecer o módulo 'src'
 sys.path.append("/opt/airflow")
-from src.modules.spark_session import get_spark_session, close_spark_session
+from src.services.spark_session import get_spark_session, close_spark_session
 import src.modules.transform_utils as transform
 import src.modules.utils as utils
 

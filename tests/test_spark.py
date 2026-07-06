@@ -3,8 +3,8 @@ import sys
 # Adiciona o diretório base (/opt/airflow) ao sys.path para reconhecer o módulo 'src'
 sys.path.append("/opt/airflow")
 
-from src.modules.spark_session import get_spark_session, close_spark_session
-from src.modules.minio_utils import create_minio_bucket
+from src.services.spark_session import get_spark_session, close_spark_session
+from src.services.minio_utils import create_minio_bucket
 
 def create_and_show_spark_df(): 
     """

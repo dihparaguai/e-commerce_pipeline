@@ -20,10 +20,15 @@ def get_spark_session(app_name: str) -> SparkSession:
 
         logger.debug("Configurando Hadoop S3A com endpoint: '{}' e usuário: '{}'", minio_endpoint, minio_user)
         
+        # Recupera o master URL com fallback para o cluster local do docker-compose
+        spark_master = os.getenv("SPARK_MASTER", "spark://spark-master:7077")
+        logger.debug("Conectando ao Spark Master: '{}'", spark_master)
+        
         # Inicializa a builder da sessão do Spark
         spark = (
             SparkSession.builder
             .appName(app_name)
+            .master(spark_master)
             # Configurações do Hadoop FileSystem para MinIO
             .config("spark.hadoop.fs.s3a.endpoint", minio_endpoint)
             .config("spark.hadoop.fs.s3a.access.key", minio_user)
@@ -34,6 +39,7 @@ def get_spark_session(app_name: str) -> SparkSession:
             .config("spark.cores.max", "5")
             .config("spark.executor.cores", "5")
             .config("spark.executor.memory", "512m")
+            .config("spark.driver.memory", "512m")
             .getOrCreate()
         )
         

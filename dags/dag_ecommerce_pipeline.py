@@ -9,7 +9,7 @@ from airflow.operators.python import PythonOperator
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 from datetime import datetime, timedelta
 from loguru import logger
-from src.modules.minio_utils import create_minio_bucket
+from src.services.minio_utils import create_minio_bucket
 
 # Configurações globais centralizadas do Spark
 SPARK_CONN_ID = "spark_default"
@@ -35,7 +35,8 @@ with DAG(
     dag_id="dag_ecommerce_pipeline",
     default_args=default_args,
     start_date=datetime(2026, 1, 1),
-    schedule=None,  # Execução manual
+    # min, hora, dia mes, ano
+    schedule= "0 7 * * *", # Executa todo dia às 07:00
     catchup=False,
     tags=['ecommerce', 'pipeline', 'minio', 'postgres'],
 ) as dag:
