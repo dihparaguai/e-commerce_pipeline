@@ -61,3 +61,32 @@ def create_fato_devolucoes(df_devolucoes: DataFrame) -> DataFrame:
     df_fato = _drop_data_carga(df_devolucoes)
     logger.info("Modelagem da fato_devolucoes concluída.")
     return df_fato
+
+def create_fato_estoque(df_estoque: DataFrame, df_dim_fornecedor: DataFrame) -> DataFrame:
+    """
+    Cria a tabela fato_estoque a partir da tabela Silver de estoque e da dimensão fornecedor (dim_fornecedor).
+    Realiza o join para trazer o fornecedor_id e remove colunas descritivas (produto, categoria, marca, fornecedor).
+    """
+    logger.info("Iniciando a modelagem da fato estoque (fato_estoque)...")
+    if df_estoque is None:
+        logger.warning("Origem de estoque é None. Retornando None.")
+        return None
+        
+    # Limpa colunas de data_carga antigas
+    df_estoque = _drop_data_carga(df_estoque)
+    
+    if df_dim_fornecedor is None:
+        logger.warning("Dimensão fornecedor é None. Preenchendo fornecedor_id com nulo.")
+        df_joined = df_estoque.withColumn("fornecedor_id", F.lit(None).cast("int"))
+    else:
+        df_dim_fornecedor = _drop_data_carga(df_dim_fornecedor)
+        logger.info("Realizando join com a dim_fornecedor para buscar o fornecedor_id...")
+        df_joined = df_estoque.join(df_dim_fornecedor, on=["fornecedor"], how="left")
+        
+    # Remove as colunas descritivas
+    logger.info("Removendo colunas descritivas redundantes de produto e fornecedor...")
+    cols_to_drop = ["produto", "categoria", "marca", "fornecedor"]
+    df_fato = df_joined.drop(*cols_to_drop)
+    
+    logger.info("Modelagem da fato_estoque concluída.")
+    return df_fato

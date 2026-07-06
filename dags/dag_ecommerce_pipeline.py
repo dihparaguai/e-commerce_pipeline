@@ -142,6 +142,14 @@ with DAG(
         verbose=True
     )
 
+    # Modelagem de Fato Estoque
+    modeling_fato_estoque = SparkSubmitOperator(
+        task_id="modeling_fato_estoque_to_gold",
+        application=f"{JOBS_BASE_PATH}/modeling/modeling_fato_estoque.py",
+        conn_id=SPARK_CONN_ID,
+        verbose=True
+    )
+
     # Definição do fluxo do pipeline:
     create_buckets >> [ingest_vendas, ingest_estoque, ingest_devolucoes]
     ingest_vendas >> transform_vendas
@@ -153,3 +161,4 @@ with DAG(
     transform_estoque >> modeling_dim_fornecedor
     [transform_vendas, modeling_dim_local] >> modeling_fato_vendas
     transform_devolucoes >> modeling_fato_devolucoes
+    [transform_estoque, modeling_dim_fornecedor] >> modeling_fato_estoque
