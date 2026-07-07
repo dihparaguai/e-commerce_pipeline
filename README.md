@@ -11,7 +11,7 @@ O projeto demonstra a implementação de um fluxo de dados robusto, orquestrado 
 * **Solução:** Um pipeline automatizado que ingere os arquivos brutos salvando-os na camada **Bronze** (Raw) do Data Lake, limpa e padroniza os dados na camada **Silver** (Cleaned), e carrega os dados modelados (Fatos e Dimensões) na camada **Gold** (Analytical) no Data Lake (MinIO) e no Data Warehouse (PostgreSQL).
 * **Objetivos Técnicos e de Negócio**:
   * **Organização em Camadas e Rastreabilidade**: Garantir o armazenamento segregado e a rastreabilidade histórica completa dos dados, permitindo auditar a origem e o ciclo de transformações de cada registro.
-  * **Consumo**: Disponibilizar dados limpos e modelados em tabelas de Fatos e Dimensões prontos para serem consumidos ferramentas analíticas ou de visualização. Para este projeto, o Power BI é utilizado para a criação de dashboards interativos e analíticos.
+  * **Consumo**: Disponibilizar dados limpos e modelados em tabelas de Fatos e Dimensões prontos para serem consumidos ferramentas analíticas. Para este projeto, o Power BI é utilizado para a criação de dashboards interativos e analíticos.
 
 ---
 
@@ -20,9 +20,9 @@ A arquitetura medalhão é híbrida, utilizando armazenamento em Object Storage 
 
 * **Camada `bronze` (Raw - Lake):** Armazenada no **MinIO** (Object Storage). Ingesta os dados convertendo os CSVs brutos em arquivos no formato **Parquet**, estruturando os dados na sua forma original com histórico de carga. A ingestão é incremental, utilizando lógica de CDC (Change Data Capture) com checagem de IDs para garantir que apenas dados novos sejam adicionados caso ainda restem duplicados após a filtragem de CDC.
 * **Camada `silver` (Cleaned - Lake):** Armazenada no **MinIO** (Object Storage) também em formato **Parquet**. Contém dados limpos e padronizados com histórico de carga. A transformação é realizada de forma incremental utilizando a lógica da coluna `data_carga` para processar apenas novas cargas, realizando a checagem de IDs para garantir a inserção exclusiva de dados novos.
-* **Camada `gold` (Analytical - Lake & DW):** Armazenada em formato **Parquet** no **MinIO** (Object Storage) e carregada no **PostgreSQL** (Data Warehouse). Estruturada em tabelas dimensionais (Fatos e Dimensões usando Star Schema) otimizadas para consultas rápidas e consumo direto pelo Power BI.
+* **Camada `gold` (Analytical - Lake & DW):** Armazenada em formato **Parquet** no **MinIO** (Object Storage) e carregada no **PostgreSQL** (Data Warehouse). Estruturada em tabelas dimensionais (Fatos e Dimensões usando Star Schema) otimizadas para consultas rápidas e consumo pelo Power BI.
 
-### 2.1. Tabelas do Lakehouse (Camadas Silver e Gold)
+### 2.1. Tabelas das Camadas Silver e Gold
 * **Camada Silver:**
   * `vendas`: Dados transacionais de vendas.
   * `devolucoes`: Dados transacionais de devoluções.
@@ -38,12 +38,13 @@ A arquitetura medalhão é híbrida, utilizando armazenamento em Object Storage 
     * `fato_devolucoes`: Dados transacionais de devoluções.
     * `fato_estoque`: Níveis de estoque.
 
+#### Diagrama de Entidade-Relacionamento (ERD)
+![Esquema ER das Tabelas da Camada Gold](docs/tables_ecommerce_pipeline_erd.png)
+
 ---
 
 ## 3. Fluxo da DAG e Dependências
 O fluxo segue a seguinte hierarquia e dependência de execução das tarefas no Apache Airflow:
-
-![Fluxo da DAG](docs/dag_pipeline_graph.png)
 
 a. **Setup Inicial**:
    * `create_buckets_task`: Responsável por garantir que os buckets do MinIO existam.
@@ -65,24 +66,27 @@ c. **Modelagem Analítica (Gold)**:
      * `modeling_fato_devolucoes_to_gold`: Depende de `transform_devolucoes`.
      * `modeling_fato_estoque_to_gold`: Depende de `transform_estoque` e da dimensão `modeling_dim_fornecedor_to_gold`.
 
+#### Grafo de Dependências da DAG
+![Grafo de Dependências da DAG](docs/dag_pipeline_graph.png)
+
 ---
 
 ## 4. Tecnologias Utilizadas
-* **Linguagem Principal:** Python 3.12
-* **Processamento de Dados:** PySpark (processamento massivo) e Pandas (análise exploratória rápida)
-* **Banco de Dados / Data Warehouse:** PostgreSQL
-* **Object Storage (Lakehouse):** MinIO (simulação de S3/Cloud Storage)
-* **Orquestração:** Apache Airflow (para agendamento e gerenciamento do pipeline)
-* **Conteinerização:** Docker e Docker Compose (isolamento do ambiente e dependências)
-* **ORM e Conexão:** SQLAlchemy
-* **Monitoramento e Logs:** Loguru
-* **Visualização:** Power BI
+* **Linguagem Principal:** [Python 3.12](https://docs.python.org/3.12/)
+* **Processamento de Dados:** [PySpark](https://spark.apache.org/docs/latest/api/python/index.html) (processamento massivo) e [Pandas](https://pandas.pydata.org/docs/) (análise exploratória rápida)
+* **Banco de Dados / Data Warehouse:** [PostgreSQL 17](https://www.postgresql.org/docs/17/) (Instalado localmente no Host Windows)
+* **Object Storage (Lake):** [MinIO](https://min.io/docs/minio/linux/index.html) (simulação de S3/Cloud Storage)
+* **Orquestração:** [Apache Airflow](https://airflow.apache.org/docs/) (para agendamento e gerenciamento do pipeline)
+* **Conteinerização:** [Docker](https://docs.docker.com/) e [Docker Compose](https://docs.docker.com/compose/) (isolamento do ambiente e dependências)
+* **ORM e Conexão:** [SQLAlchemy](https://docs.sqlalchemy.org/en/20/)
+* **Monitoramento e Logs:** [Loguru](https://loguru.readthedocs.io/)
+* **Visualização:** [Power BI](https://learn.microsoft.com/power-bi/)
 
 ---
 
 ## 5. Origem dos Scripts e Imagens Docker
 As imagens de infraestrutura utilizadas neste projeto foram obtidas diretamente de fontes oficiais:
-* **Apache Airflow (Script Docker Compose Pronto para Uso):** O arquivo base `docker-compose.yaml` foi obtido a partir da documentação oficial do Apache Airflow Docker Compose Quick Start.
+* **Apache Airflow (Script Docker Compose Pronto para Uso):** O arquivo base `docker-compose.yaml` foi obtido a partir da documentação oficial do [Apache Airflow Docker Compose Quick Start](https://airflow.apache.org/docs/apache-airflow/stable/docker-compose.yaml).
 * **Apache Spark:** Imagem Docker oficial [apache/spark:3.5.1](https://hub.docker.com/r/apache/spark) baixada do Docker Hub.
 * **MinIO:** Imagem Docker oficial [quay.io/minio/minio](https://quay.io/repository/minio/minio) baixada do Quay.io.
 
@@ -115,9 +119,11 @@ e-commerce_pipeline/
 ## 7. Configurações e Dependências
 
 ### Pré-requisitos
-* Git
-* Docker e Docker Compose instalado
+* Git (para clonar o repositório)
+* Docker e Docker Compose instalados (para execução do pipeline)
 * Python 3.12 (caso queira executar scripts isoladamente local)
+* PostgreSQL Server 17 (Instalado no Host Windows)
+* Power BI Desktop (para visualização dos dashboards analíticos)
 
 ### Variáveis de Ambiente
 Crie um arquivo `.env` na raiz do projeto com base no modelo abaixo:
@@ -135,6 +141,33 @@ PG_PASSWORD=
 PG_HOST=
 PG_PORT=
 PG_DB=
+```
+
+### Configuração do PostgreSQL no Host Windows (Data Warehouse)
+Como a infraestrutura do projeto opera em containers, é necessário configurar o PostgreSQL instalado na máquina local do host Windows a autorizar requisições das sub-redes Docker e, se usado, WSL:
+
+a. Modifique o arquivo `pg_hba.conf` do PostgreSQL Server no Windows inserindo os direcionamentos IP:
+```conf
+# Acesso interno para serviços Docker
+host    all    all    172.18.0.0/16     md5
+# Acesso interno para o terminal WSL
+host    all    all    192.168.0.0/24    md5
+```
+b. Crie uma regra explícita no **Firewall do Windows** permitindo tráfego de entrada na porta de conexão de entrada TCP do PostgreSQL (`5432`).
+
+#### Criação do Banco e Permissões de Esquema
+Como a aplicação opera sob o princípio de mínimo privilégio, é necessário criar previamente o usuário de conexão configurado no `.env` e seu respectivo escopo.
+
+Acesse o PostgreSQL do host Windows como superusuário (geralmente `postgres`) e execute sequencialmente:
+```sql
+-- Crie o usuário no Postgres apenas se necessário
+CREATE USER seu_usuario_postgres WITH PASSWORD 'sua_senha_postgres';
+
+-- Crie o banco de dados apenas se necessário
+CREATE DATABASE seu_banco_de_dados OWNER seu_usuario_postgres;
+
+-- Após conectar-se ao banco (seu_banco_de_dados), libere os privilégios gerais:
+GRANT ALL ON SCHEMA public TO seu_usuario_postgres;
 ```
 
 ---
@@ -175,5 +208,5 @@ O diretório `notebooks/` contém notebooks voltados para análise exploratória
 ---
 
 ## 11. Melhorias Futuras
-* **Data Lake na Nuvem:** Substituir o armazenamento local por armazenamento em nuvem (AWS S3, Azure Data Lake Storage Gen 2 ou Google Cloud Storage).
+* **Data Lake na Nuvem:** Substituir o armazenamento local por armazenamento em nuvem: AWS S3 (Amazon Web Services Simple Storage Service), ADLS Gen2 (Azure Data Lake Storage Gen2) ou GCS (Google Cloud Storage).
 * **CI/CD Pipeline:** Configurar GitHub Actions para rodar testes automatizados (`pytest`).
