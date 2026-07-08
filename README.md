@@ -62,9 +62,9 @@ c. **Modelagem Analítica (Gold)**:
      * `modeling_dim_local_to_gold`: Executa após a conclusão de `transform_vendas`.
      * `modeling_dim_fornecedor_to_gold`: Executa após a conclusão de `transform_estoque`.
    * **Fatos**:
-     * `modeling_fato_vendas_to_gold`: Depende de `transform_vendas` e da dimensão `modeling_dim_local_to_gold`.
-     * `modeling_fato_devolucoes_to_gold`: Depende de `transform_devolucoes`.
-     * `modeling_fato_estoque_to_gold`: Depende de `transform_estoque` e da dimensão `modeling_dim_fornecedor_to_gold`.
+     * `modeling_fato_vendas_to_gold`: Depende de `transform_vendas` e das dimensões `modeling_dim_local_to_gold`, `modeling_dim_produto_to_gold` e `modeling_dim_cliente_to_gold`.
+     * `modeling_fato_devolucoes_to_gold`: Depende de `transform_devolucoes`, do carregamento prévio de `modeling_fato_vendas_to_gold` e das dimensões `modeling_dim_produto_to_gold` e `modeling_dim_cliente_to_gold`.
+     * `modeling_fato_estoque_to_gold`: Depende de `transform_estoque` e das dimensões `modeling_dim_fornecedor_to_gold` e `modeling_dim_produto_to_gold`.
 
 #### Grafo de Dependências da DAG
 ![Grafo de Dependências da DAG](docs/dag_pipeline_graph.png)
