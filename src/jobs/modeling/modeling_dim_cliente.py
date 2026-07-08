@@ -7,6 +7,7 @@ from loguru import logger
 from pyspark.sql import functions as F
 
 from src.services.spark_session import get_spark_session, close_spark_session
+from src.modules.dw_loader import load_to_postgres
 import src.modules.modeling_dim_utils as modeling
 import src.modules.utils as utils
 
@@ -65,6 +66,10 @@ def run_modeling_dim_cliente() -> None:
             .mode("overwrite")
             .parquet(gold_path)
         )
+        
+        # Executa a carga no PostgreSQL DW
+        load_to_postgres(df=df_dim_cliente.select("cliente_id"), table_name="dim_cliente")
+
         logger.info("Job de modelagem da Dimensão Cliente finalizado com sucesso!")
         
     except Exception as e:

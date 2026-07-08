@@ -26,8 +26,8 @@ ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 
-# Baixa os JARs do Hadoop AWS diretamente na pasta de JARs do Spark (ainda como root)
-RUN echo ":quit" | spark-shell --packages org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262 \
+# Baixa os JARs do Hadoop AWS e PostgreSQL JDBC diretamente na pasta de JARs do Spark (ainda como root)
+RUN echo ":quit" | spark-shell --packages org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262,org.postgresql:postgresql:42.7.3 \
     && cp /root/.ivy2/jars/*.jar /opt/spark/jars/ \
     && rm -rf /root/.ivy2
 

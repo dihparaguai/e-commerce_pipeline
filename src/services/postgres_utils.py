@@ -73,3 +73,17 @@ def execute_sql_script(file_path: str | Path) -> None:
     except Exception as e:
         logger.error(f"Falha ao executar o script SQL '{path.name}'. Detalhes: {e}")
         raise e
+
+def truncate_table(table_name: str) -> None:
+    """
+    Executa um TRUNCATE TABLE CASCADE na tabela especificada do banco de dados.
+    """
+    logger.info(f"Preparando TRUNCATE CASCADE na tabela '{table_name}'...")
+    try:
+        conn = get_postgres_connection()
+        with conn.cursor() as cursor:
+            cursor.execute(f"TRUNCATE TABLE {table_name} CASCADE;")
+        conn.close()
+        logger.info(f"Tabela '{table_name}' truncada com sucesso.")
+    except Exception as e:
+        logger.error(f"Erro ao tentar executar TRUNCATE CASCADE na tabela '{table_name}': {e}")

@@ -171,10 +171,14 @@ with DAG(
     ingest_vendas >> transform_vendas
     ingest_devolucoes >> transform_devolucoes
     ingest_estoque >> transform_estoque
+    
+    # Modelagem das dimensões (Gold) dependem das tabelas Silver transformadas
     [transform_vendas, transform_devolucoes, transform_estoque] >> modeling_dim_produto
     [transform_vendas, transform_devolucoes] >> modeling_dim_cliente
     transform_vendas >> modeling_dim_local
     transform_estoque >> modeling_dim_fornecedor
-    [transform_vendas, modeling_dim_local] >> modeling_fato_vendas
-    transform_devolucoes >> modeling_fato_devolucoes
-    [transform_estoque, modeling_dim_fornecedor] >> modeling_fato_estoque
+
+    # Modelagem das fatos dependem das dimensões (por conta de FKs no Postgres)
+    [transform_vendas, modeling_dim_local, modeling_dim_produto, modeling_dim_cliente] >> modeling_fato_vendas
+    [transform_devolucoes, modeling_fato_vendas, modeling_dim_produto, modeling_dim_cliente] >> modeling_fato_devolucoes
+    [transform_estoque, modeling_dim_fornecedor, modeling_dim_produto] >> modeling_fato_estoque

@@ -7,6 +7,7 @@ from loguru import logger
 from pyspark.sql import functions as F
 
 from src.services.spark_session import get_spark_session, close_spark_session
+from src.modules.dw_loader import load_to_postgres
 import src.modules.modeling_fato_utils as modeling_fato
 import src.modules.utils as utils
 
@@ -64,6 +65,15 @@ def run_modeling_fato_vendas() -> None:
             .partitionBy("ano", "mes", "status_pedido")
             .parquet(gold_fato_vendas_path)
         )
+        
+        # Executa a carga no PostgreSQL DW
+        df_to_load = df_fato_vendas.select(
+            "pedido_id", "produto_id", "cliente_id", "local_id", "data_pedido", 
+            "quantidade", "preco_unitario", "desconto", "frete", "valor_total", 
+            "valor_total_sem_desconto", "canal_venda", "forma_pagamento", "status_pedido"
+        )
+        load_to_postgres(df=df_to_load, table_name="fato_vendas")
+        
         logger.info("Job de modelagem da Fato Vendas finalizado com sucesso!")
         
     except Exception as e:

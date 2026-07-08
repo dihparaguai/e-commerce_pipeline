@@ -5,6 +5,7 @@ from pyspark.sql import functions as F
 # Adiciona o diretório base (/opt/airflow) ao sys.path para reconhecer o módulo 'src'
 sys.path.append("/opt/airflow")
 from src.services.spark_session import get_spark_session, close_spark_session
+from src.modules.dw_loader import load_to_postgres
 import src.modules.modeling_dim_utils as modeling
 import src.modules.utils as utils
 
@@ -71,6 +72,11 @@ def run_modeling_dim_produto() -> None:
             .partitionBy("categoria")
             .parquet(gold_path)
         )
+        
+        # Executa a carga no PostgreSQL DW
+        df_to_load = df_dim_produto.select("produto_id", "produto", "categoria", "marca")
+        load_to_postgres(df=df_to_load, table_name="dim_produto")
+        
         logger.info("Job de modelagem da Dimensão Produto finalizado com sucesso!")
         
     except Exception as e:

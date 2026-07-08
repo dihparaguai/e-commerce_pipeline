@@ -7,6 +7,7 @@ from loguru import logger
 from pyspark.sql import functions as F
 
 from src.services.spark_session import get_spark_session, close_spark_session
+from src.modules.dw_loader import load_to_postgres
 import src.modules.modeling_fato_utils as modeling_fato
 import src.modules.utils as utils
 
@@ -54,6 +55,14 @@ def run_modeling_fato_devolucoes() -> None:
             .mode("overwrite")
             .parquet(gold_fato_devolucoes_path)
         )
+        
+        # Executa a carga no PostgreSQL DW
+        df_to_load = df_fato_devolucoes.select(
+            "devolucao_id", "pedido_id", "produto_id", "cliente_id", "data_devolucao", 
+            "motivo_devolucao", "status_devolucao", "valor_devolvido"
+        )
+        load_to_postgres(df=df_to_load, table_name="fato_devolucoes")
+        
         logger.info("Job de modelagem da Fato Devoluções finalizado com sucesso!")
         
     except Exception as e:
