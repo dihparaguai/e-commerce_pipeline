@@ -120,7 +120,8 @@ e-commerce_pipeline/
 
 ### Pré-requisitos
 * Git (para clonar o repositório)
-* Docker e Docker Compose instalados (para execução do pipeline)
+* WSL2 (Windows Subsystem for Linux 2) habilitado (se estiver utilizando Windows)
+* Docker e Docker Compose instalados e integrados com o WSL2 (para execução do pipeline)
 * Python 3.12 (caso queira executar scripts isoladamente local)
 * PostgreSQL Server 17 (Instalado no Host Windows)
 * Power BI Desktop (para visualização dos dashboards analíticos)
@@ -128,31 +129,30 @@ e-commerce_pipeline/
 ### Variáveis de Ambiente
 Crie um arquivo `.env` na raiz do projeto com base no modelo abaixo:
 ```env
-AIRFLOW_UID=
+AIRFLOW_UID= # UID do usuário do sistema operacional (use o comando 'id -u')
 
-MINIO_ROOT_USER=
-MINIO_ROOT_PASSWORD=
-MINIO_ENDPOINT=
+MINIO_ROOT_USER= # Usuário administrador do MinIO (padrão: minioadmin)
+MINIO_ROOT_PASSWORD= # Senha do administrador do MinIO (padrão: minioadmin)
+MINIO_ENDPOINT= # Endpoint do MinIO para conexões internas (padrão: http://minio:9000)
 
-SPARK_MASTER=
+SPARK_MASTER= # URL do Spark Master (padrão: spark://spark-master:7077)
 
-PG_USER=
-PG_PASSWORD=
-PG_HOST=
-PG_PORT=
-PG_DB=
+PG_USER= # Usuário do PostgreSQL DW (ex: postgres ou seu_usuario)
+PG_PASSWORD= # Senha do usuário do PostgreSQL DW
+PG_HOST= # IP do host Windows para conexões do WSL (ex: 172.25.64.1)
+PG_PORT= # Porta de escuta do PostgreSQL (padrão: 5432)
+PG_DB= # Nome do banco de dados (ex: db_ecommerce)
 ```
 
 ### Configuração do PostgreSQL no Host Windows (Data Warehouse)
-Como a infraestrutura do projeto opera em containers, é necessário configurar o PostgreSQL instalado na máquina local do host Windows a autorizar requisições das sub-redes Docker e, se usado, WSL:
+Como a infraestrutura do projeto opera em containers, é necessário configurar o PostgreSQL instalado na máquina local do host Windows a autorizar requisições das sub-redes Docker e, se usado, WSL2:
 
 a. Modifique o arquivo `pg_hba.conf` do PostgreSQL Server no Windows inserindo os direcionamentos IP:
 ```conf
-# Acesso interno para serviços Docker
-host    all    all    172.18.0.0/16     md5
-# Acesso interno para o terminal WSL
-host    all    all    192.168.0.0/24    md5
+# Acesso interno para serviços Docker e WSL2
+host    all    		all    		172.16.0.0/12     	md5
 ```
+
 b. Crie uma regra explícita no **Firewall do Windows** permitindo tráfego de entrada na porta de conexão de entrada TCP do PostgreSQL (`5432`).
 
 #### Criação do Banco e Permissões de Esquema

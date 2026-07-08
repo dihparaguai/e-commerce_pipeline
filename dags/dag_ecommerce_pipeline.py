@@ -10,6 +10,7 @@ from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOpe
 from datetime import datetime, timedelta
 from loguru import logger
 from src.services.minio_utils import create_minio_bucket
+from src.services.postgres_utils import execute_sql_script
 
 # Configurações globais centralizadas do Spark
 SPARK_CONN_ID = "spark_default"
@@ -23,6 +24,13 @@ def create_buckets_task():
     create_minio_bucket("bronze")
     create_minio_bucket("silver")
     create_minio_bucket("gold")
+
+def create_dw_tables_task():
+    """
+    Garante que as tabelas do DW PostgreSQL sejam criadas com as devidas constraints.
+    """
+    ddl_path = Path(__file__).resolve().parent.parent/"src"/"sql"/"create_dw_tables.sql"
+    execute_sql_script(ddl_path)
 
 # Configuração dos argumentos padrão da DAG do pipeline
 default_args = {
@@ -45,6 +53,12 @@ with DAG(
     create_buckets = PythonOperator(
         task_id="create_buckets_task",
         python_callable=create_buckets_task,
+    )
+
+    # Setup do Banco de Dados (DW)
+    create_dw_tables = PythonOperator(
+        task_id="create_dw_tables_task",
+        python_callable=create_dw_tables_task,
     )
 
     # Ingestão de Vendas
@@ -153,6 +167,7 @@ with DAG(
 
     # Definição do fluxo do pipeline:
     create_buckets >> [ingest_vendas, ingest_estoque, ingest_devolucoes]
+    create_dw_tables >> [ingest_vendas, ingest_estoque, ingest_devolucoes]
     ingest_vendas >> transform_vendas
     ingest_devolucoes >> transform_devolucoes
     ingest_estoque >> transform_estoque
