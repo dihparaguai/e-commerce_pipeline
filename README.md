@@ -39,7 +39,7 @@ A arquitetura medalhão é híbrida, utilizando armazenamento em Object Storage 
     * `fato_estoque`: Níveis de estoque.
 
 #### Diagrama de Entidade-Relacionamento (ERD)
-![Esquema ER das Tabelas da Camada Gold](docs/tables_ecommerce_pipeline_erd.png)
+![Esquema ER das Tabelas da Camada Gold](docs/tables_e-commerce_pipeline_erd.png)
 
 ---
 
@@ -102,7 +102,6 @@ e-commerce_pipeline/
 ├── docs/                 # Diagramas e documentação do projeto
 ├── notebooks/            # Jupyter Notebooks para análise exploratória e testes
 └── src/                  # Código-fonte do pipeline
-│   ├── config/           # Configurações globais e de banco de dados
 │   ├── jobs/             # Jobs dos pipelines (bronze, silver e gold)
 │   ├── modules/          # Módulos reutilizáveis (classes, transformações, loads)
 │   ├── services/         # Serviços reutilizáveis (minio, postgres, spark)
@@ -208,6 +207,19 @@ O diretório `notebooks/` contém notebooks voltados para análise exploratória
 
 ---
 
-## 11. Melhorias Futuras
+## 11. Dashboard Analítico (Visualização)
+Como entrega final do pipeline de dados, o Data Warehouse PostgreSQL foi conectado a um relatório no **Power BI Desktop** para demonstrar o consumo prático dos dados modelados na camada Gold.
+
+O dashboard oferece as seguintes visões analíticas:
+* **Vendas**: KPIs de valor total vendido, evoluções de vendas por mês nos últimos 12 meses, distribuição de vendas por categoria e produtos, e faturamento por estado.
+* **Devoluções**: KPIs de quantidade de devoluções e taxa de devolução, além de devoluções por motivo.
+* **Pedidos**: KPIs de quantidade total de pedidos, acompanhamento de pedidos por estado (mapa), pedidos por forma de pagamento e por status (entregue, cancelado, faturado).
+
+![Dashboard de Vendas](docs/dashboard_e-commerce_power_bi.png)
+
+---
+
+## 12. Melhorias Futuras
 * **Data Lake na Nuvem:** Substituir o armazenamento local por armazenamento em nuvem: AWS S3 (Amazon Web Services Simple Storage Service), ADLS Gen2 (Azure Data Lake Storage Gen2) ou GCS (Google Cloud Storage).
+* **Orquestração e Escalabilidade com Kubernetes (K8s):** Migrar a infraestrutura atual do Docker Compose para rodar sobre Kubernetes, para escalabilidade elástica de containers Spark workers.
 * **CI/CD Pipeline:** Configurar GitHub Actions para rodar testes automatizados (`pytest`).
