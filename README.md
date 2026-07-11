@@ -48,6 +48,7 @@ O fluxo segue a seguinte hierarquia e dependência de execução das tarefas no 
 
 a. **Setup Inicial**:
    * `create_buckets_task`: Responsável por garantir que os buckets do MinIO existam.
+   * `create_dw_tables_task`: Responsável por garantir a criação das tabelas, chaves e restrições no PostgreSQL DW.
 
 b. **Ingestão e Transformação (Bronze ➔ Silver)**:
    * *Nota: As tarefas de ingestão iniciam em paralelo após a conclusão do setup inicial.*
