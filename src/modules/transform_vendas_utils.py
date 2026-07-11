@@ -5,7 +5,7 @@ from loguru import logger
 def create_total_without_discount(df: DataFrame) -> DataFrame:
     """
     Cria a coluna 'valor_total_sem_desconto'.
-    Fórmula: valor_total - desconto
+    Fórmula: valor_total + desconto
     """
     logger.info("Criando a coluna valor_total_sem_desconto")
     if df is None:
@@ -13,7 +13,7 @@ def create_total_without_discount(df: DataFrame) -> DataFrame:
     
     return df.withColumn(
         "valor_total_sem_desconto",
-        F.col("valor_total") - F.col("desconto")
+        F.col("valor_total") + F.col("desconto")
     )
 
 
